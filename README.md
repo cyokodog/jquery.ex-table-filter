@@ -50,11 +50,11 @@ jquery.js と jquery.extablefilter.js を読み込みます。
 		}
 	});
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo01)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo01)
 
 フィルタ条件の入力フィールドには、ラジオボタン、チェックボックス、プルダウンメニューも指定できます。
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo02)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo02)
 
 ## ロジックでフィルタリング判定する
 
@@ -87,7 +87,7 @@ element パラメータでフィルタ条件入力フィールドを指定し、
 
 という処理をしてます。数値変換しない値を取得する場合は、それぞれ getCurrentCellVal()、getCurrentFilterVal() を使用します。
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo03)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo03)
 
 ## フィルタリング時に処理を割り込ませる
 
@@ -134,7 +134,7 @@ element パラメータでフィルタ条件入力フィールドを指定し、
 - onFilteringEnd
 	- フィルタリング終了時に実行されます。集計結果を表示してます。
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo04)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo04)
 
 ## フィルタリングの一致条件を指定する
 
@@ -161,7 +161,7 @@ element パラメータでフィルタ条件入力フィールドを指定し、
 - wildcardMatch
 	- ワイルドカード一致フィルタ。フィルタ条件指定外の部分に * を指定する必要があります。例えば jquery.js というデータを表示さるには jquery.* のように指定します。（jquery. では表示されません)
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo05)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo05)
 
 ## 条件入力フィールドを使わずフィルタリングする
 
@@ -175,7 +175,7 @@ filters パラメータに条件入力フィールドを指定せず、正規表
 		}
 	});
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo06)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo06)
 
 関数によるフィルタリングの例。クエリストリングで指定されたカテゴリのデータのみを表示するには、以下のように書けます。（返却値として関数を返し、その実行結果でフィルタリング判定をさせることもできます。）
 
@@ -197,7 +197,7 @@ filters パラメータに条件入力フィールドを指定せず、正規表
 		}
 	});
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo07)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo07)
 
 ## select > option 要素の value 属性でフィルタリングする
 
@@ -212,7 +212,7 @@ select 要素を条件入力フィールドとした場合、選択された opt
 			}
 		});
 
-[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo08)
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo08)
 
 ## パラメータ
 
