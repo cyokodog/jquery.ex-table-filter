@@ -199,6 +199,21 @@ filters パラメータに条件入力フィールドを指定せず、正規表
 
 [Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo07)
 
+## select > option 要素の value 属性でフィルタリングする
+
+select 要素を条件入力フィールドとした場合、選択された option 要素の innerText で一致判定が行われますが、selectValueMatch パラメータを指定することで、option 要素の value 属性で一致判定を行うことができます。
+
+		$('#data').exTableFilter({
+			filters : {
+				2 : {
+					element : '#category-filter',
+					selectValueMatch : true
+				}
+			}
+		});
+
+[Demo](http://cyokodog.github.com/jquery.ex-table-filter/demo.html#demo08)
+
 ## パラメータ
 
 プラグイン実行時、下記パラメータを指定できます。
@@ -225,6 +240,7 @@ filters パラメータに条件入力フィールドを指定せず、正規表
 			onFiltering : function(api){}
 		},
 		selectElementFilter : {	//	select,radio,checkbox 要素でフィルタする場合のデフォルト設定
+			selectValueMatch : false,	//	select 要素でフィルタする場合の value 属性で一致判定する
 			element : '',	//	elementFilterと同様
 			firstMatch : false,	//	elementFilterと同様
 			lastMatch : false,	//	elementFilterと同様
