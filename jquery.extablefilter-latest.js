@@ -1,5 +1,5 @@
 /*
- *  Ex Table Filter 0.2 - jQuery Plugin
+ *  Ex Table Filter 0.3 - jQuery Plugin
  *  written by Cyokodog
  */
 ;(function($){
@@ -323,6 +323,7 @@
 	// jQuery Method
 	$.fn.exTableFilter = function(option){
 	var targets = this,api = [];
+	if(option instanceof Array) option = {filters : option};
 	targets.each(function(index) {
 		var target = targets.eq(index);
 		var obj = target.data(plugin.id) ||

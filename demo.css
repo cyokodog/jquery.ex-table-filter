@@ -1,0 +1,49 @@
+/* bootstrap */
+div.page-header{
+	margin-top:64px;
+	margin-bottom:16px;
+}
+table.table td{
+	padding-top:1px;
+	padding-bottom:1px;
+}
+
+/* reset */
+html{
+	overflow-y:scroll;
+}
+
+/* demo conponent */
+div.demo h3{
+	margin-top:0;
+}
+table.data th{
+	width:15%;
+}
+table.data th.category{
+	width:auto;
+}
+.filters{
+	margin:16px;
+}
+.filters dt{
+	margin:0 0 4px;
+	padding:0 1% 0 0;
+	float:left;
+	width:14%;
+	display:block;
+	text-align:right;
+	font-weight:normal;
+}
+.filters dd{
+	margin:0 0 4px;
+	padding:0;
+	float:left;
+	width:85%;
+	display:block;
+}
+div.demo a.active{
+	font-weight:bold;
+	font-size:120%;
+	color:#ff5577;
+}

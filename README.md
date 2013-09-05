@@ -2,6 +2,14 @@
 
 テーブル表に対し柔軟性の高いフィルタリング機能を適用できる jQuery プラグインです。
 
+## 変更履歴
+
+- v0.2
+	- select > option 要素の value 属性でフィルタリング可能にした。（selectValueMatch パラメータの追加）
+- v0.3
+	- プラグインの実行時、パラメータ名を指定ぜずフィルター要素のみを指定できるようにした。
+		- $('table').exTableFilter([ '.filter1', '.filter2', ... ]);
+
 ## 基本的な使い方
 
 ### js ファイルのインクルード
@@ -49,6 +57,16 @@ jquery.js と jquery.extablefilter.js を読み込みます。
 			2 : '#category-filter'
 		}
 	});
+
+簡略化した方法として、以下のような記述も可能です。
+
+	$('#data').exTableFilter({
+		filters : ['','','#category-filter']
+	});
+
+又は、
+
+	$('#data').exTableFilter(['','','#category-filter']);
 
 [Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo01)
 
@@ -213,6 +231,38 @@ select 要素を条件入力フィールドとした場合、選択された opt
 		});
 
 [Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo08)
+
+## １つの条件入力フィールドを複数のテーブルに対し適用する
+
+１つの条件入力フィールドを複数のテーブルに対し適用するには、複数テーブルを選択した状態でプラグインを実行することで可能です。
+
+		$('#data1,#data2').exTableFilter({
+			filters : {
+				2 : {
+					element : '#category-filter'
+				}
+			}
+		});
+
+テーブルのカラム構成がそれぞれ異なる場合は、個別にプラグインを適用します。
+
+		$('#data1').exTableFilter({
+			filters : {
+				1 : {
+					element : '#category-filter'
+				}
+			}
+		});
+		$('#data2').exTableFilter({
+			filters : {
+				2 : {
+					element : '#category-filter'
+				}
+			}
+		});
+
+[Demo](http://cyokodog.github.io/jquery.ex-table-filter/demo.html#demo09)
+
 
 ## パラメータ
 
