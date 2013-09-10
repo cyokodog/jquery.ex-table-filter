@@ -1,6 +1,16 @@
 /*
  *  Ex Table Filter 0.3 - jQuery Plugin
- *  written by Cyokodog
+ *	written by cyokodog
+ *
+ *	Copyright (c) 2013 cyokodog 
+ *		http://d.hatena.ne.jp/cyokodog/)
+ *		http://cyokodog.tumblr.com/
+ *		http://www.cyokodog.net/
+ *	MIT LICENCE
+ *
+ *	Built for jQuery library
+ *	http://jquery.com
+ *
  */
 ;(function($){
 	var f = $.regexp = function(option){
@@ -316,7 +326,7 @@
 			onFiltering : function(api){}
 		}
 	},
-	version : '0.2',
+	version : '0.3',
 	id : 'ex-table-filter'
 	});
 
