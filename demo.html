@@ -184,6 +184,16 @@ jQuery(function($){
 			if(api.getIndex() == 8){
 				$('table.data').exTableFilter(['','','#category-filter']);
 			}
+			else
+			if(api.getIndex() == 9){
+				$('table.data').exTableFilter({
+					filters : {
+						1 : '#class-category-filter',
+						2 : '#class-category-filter',
+						3 : '#qty-filter'
+					}
+				});
+			}
 		}
 	});
 });
@@ -203,7 +213,7 @@ jQuery(function($){
 				</div>
 			</div>
 			<div class="page-header">
-				<h1>Ex Table Filter</h1>
+				<h1>Ex Table Filter <small>v0.4</small></h1>
 				<p class="lead">$('table').exTableFilter([ '.filter1', '.filter2', ... ]);</p>
 			</div>
 		</div>
@@ -337,6 +347,22 @@ jQuery(function($){
 						<div class="span6 data-area"></div>
 						<div class="span6 data-area"></div>
 					</div>
+				</div>
+
+
+				<div class="demo">
+					<h3>Demo10</h3>
+					<p>１フィルターを複数カラムに適用</p>
+					<dl class="filters form-inline">
+						<dt>Class or Category：</dt>
+						<dd>
+							<input id="class-category-filter" type="text"/>
+						</dd>
+						<dt>Qty：</dt>
+						<dd>
+							<input id="qty-filter" name="qty-filter" type="text"/>
+						</dd>
+					</dl>
 				</div>
 
 				<table class="table data">
