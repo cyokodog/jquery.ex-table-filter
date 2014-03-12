@@ -2,24 +2,77 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>jQuery Ex Table Filter :: Demo</title>
-<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-<link href="demo.css" rel="stylesheet">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=8,IE=9,IE=10,IE=11,IE=12" />
+<title>Social Info | jQuery Plugin :: Demo</title>
+<link href="http://cyokodog.github.io/jquery.ex-code-prettify/jquery.ex-code-prettify.css" rel="stylesheet" type="text/css" media="screen" >
+<!--
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" >
+-->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+
+<style>
+h1{
+	text-transform:uppercase;
+}
+div.inline-form > *{
+	margin-right:16px;
+	min-width:48px;
+	display:inline-block;
+}
+
+div.no-filter div.checkbox{
+	margin-right:16px;
+	min-width:48px;
+	display:inline-block;
+}
+#sum{
+	color:#ff5577;
+	font-size:30px;
+}
+tr.delim td{
+	background:#eee;
+}
+div.two-table table{
+	margin-right:2%;
+	float:left;
+	width:48%;
+}
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!--
 <script src="http://cyokodog.github.io/jquery.hash-contents/jquery.hash-contents.js"></script>
-<script src="jquery.extablefilter-latest.js?v0.4"></script>
+-->
+<script src="jquery.hash-contents.js"></script>
+<!--
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+-->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+<script src="http://cyokodog.github.io/jquery.ex-code-prettify/google-code-prettify/prettify.js"></script>
+<script src="http://cyokodog.github.io/jquery.ex-code-prettify/jquery.ex-code-prettify.js"></script>
+<script src="http://cyokodog.github.io/jquery.ex-code-prettify/behave/behave.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.3.1/jquery.cookie.min.js"></script>
 <script>
 jQuery(function($){
 
-	var build_demo_element = function(api){
-		$('table.data').appendTo(api.getTarget());
+	$.buildFilterElement = function(api){
+//		$('table.data').appendTo(api.getTarget());
 
-		var sel = $('#no-filters');
+		var sel = $('#no-filter');
 		if(sel.size()){
 			$('table.data').find('tbody tr').each(function(idx){
 				var v = $(this).find('td').eq(0).text();
-				if(v) $('<input name="no-filter" type="checkbox"/>').prop('id','no-filter'+v).val(v).appendTo(sel).after($('<label/>').attr('for','no-filter'+v).html(v+'&nbsp;'));
+
+/*
+				if(v) $('<input name="no-filter" type="checkbox">').prop('id','no-filter'+v).val(v).appendTo(sel).after($('<label/>').attr('for','no-filter'+v).html(v+'&nbsp;'));
+*/
+if(v){
+	var label = $('<label/>').text(v);
+	var checkbox = $('<input name="no-filter" type="checkbox">').prop('id','no-filter'+v).val(v).prependTo(label);
+	label.wrap('<div class="checkbox"/>').parent().appendTo(sel);
+}
+
 			});
 		}
 
@@ -45,372 +98,897 @@ jQuery(function($){
 		});
 	}
 
+
 	$('div.demo').hashContents({
-		listTo : 'ul.index',
+		xuseHash : false,
+		useCookie : true,
+		reloadHashChange : true,
+		idPrefix : 'Demo',
+		listTo : 'ul.demo-index',
+		activeTitleTo : 'span.demo-title',
 		onActive : function(api){
 
-			build_demo_element(api);
 
-			if(api.getIndex() == 0){
 
-				$('table.data').exTableFilter(['','','#category-filter']);
+var common = $('div.demo-common');
+var demo = $('div.demo');
+var html = demo.find('textarea.html');
 
-			//	$('table.data').exTableFilter({
-			//		filters : ['','','#category-filter']
-			//	});
-			//	$('table.data').exTableFilter({
-			//		filters : {
-			//			2 : '#category-filter'
-			//		}
-			//	});
+common.find('textarea.jsFile').prependTo(demo.find('div.ex-code-prettify'));
+//common.find('textarea.cssFile').prependTo(demo.find('div.ex-code-prettify'));
 
+demo.find('textarea.script').before(common.find('textarea.script'));
+
+//common.find('textarea.script').appendTo(demo.find('div.ex-code-prettify'));
+
+var table = common.find('textarea.html').val();
+if($('div.demo div.two-table').size() > 0){
+	table += table;
+}
+html.val(html.val() + table);
+
+common.remove();
+
+
+	$('div.demo textarea.code').exCodePrettify({
+		tabToSpace : true,
+		showDemo : true,
+		editCode : true,
+		behaveJS : true
+	});
+
+/*
+			if(api.getActiveTarget().prop('id') == 'Demo15'){
+				$('div.demo-index-group').hide();
 			}
-			else
-			if(api.getIndex() == 1){
-				$('table.data').exTableFilter({
-					filters : {
-						0 : 'input[name=no-filter]',
-						1 : 'input[name=class-filter]',
-						2 : '#category-filter'
-					}
-				});
-			}
-			else
-			if(api.getIndex() == 2){
-				$('table.data').exTableFilter({
-					filters : {
-						1 : 'input[name=class-filter]',
-						2 : '#category-filter',
-						3 : {
-							element : 'input[name=qty-filter]',
-							onFiltering : function(api){
-								return api.getCurrentCellNum() >= api.getCurrentFilterNum();
-							}
-						}
-					}
-				});
-			}
-			else
-			if(api.getIndex() == 3){
-				var sum;
-				$('table.data').exTableFilter({
-					filters : {
-						1 : 'input[name=class-filter]',
-						2 : '#category-filter',
-						3 : {
-							element : 'input[name=qty-filter]',
-							onFiltering : function(api){
-								return api.getCurrentCellNum() >= api.getCurrentFilterNum();
-							}
-						}
-					},
-					onFilteringStart : function(api){
-						sum = 0;
-					},
-					onFiltering : function(api){
-						if(api.isShowCurrentRow()) sum = sum + api.getCurrentCellNum(3);
-					},
-					onFilteringEnd : function(api){
-						$('#sum').html(sum);
-					}
-				});
-			}
-			else
-			if(api.getIndex() == 4){
-				var sum;
-				$('table.data').exTableFilter({
-					filters : {
-						2 : {
-							element : '#category-filter',
-							firstMatch : true
-						}
-					},
-					onFilteringStart : function(api){
-						sum = 0;
-					},
-					onFiltering : function(api){
-						if(api.isShowCurrentRow()) sum = sum + api.getCurrentCellNum(3);
-					},
-					onFilteringEnd : function(api){
-						$('#sum').html(sum);
-					}
-				});
-			}
-			else
-			if(api.getIndex() == 5){
-				$('table.data').exTableFilter({
-					filters : {
-						0 : /^\d+$/
-					}
-				});
-			}
-			else
-			if(api.getIndex() == 6){
-				$('table.data').exTableFilter({
-					filters : {
-						1 : function(api){
-							var q = location.search.replace('?','').split('&');
-							var _class = 'core';
-							for(var i in q){
-								var p = q[i].split('=');
-								if(p[0] == 'class') _class = p[1];
-							}
-							$('a').each(function(){
-								if($(this).hasClass(_class)){$(this).addClass('active')}
-							});
-							return (!_class || api.getCurrentCellVal() == _class);
-						}
-					}
-				});
-			}
-			else
-			if(api.getIndex() == 7){
-				var opt = $('select#category-filter option');
-				opt.each(function(idx){
-					var el = opt.eq(idx);
-					var v = el.text();
-					el.text((v ? 'value is ' + v : 'all')).prop('value', v);
-				});
-				$('table.data').exTableFilter({
-					filters : {
-						2 : {
-							element : '#category-filter',
-							selectValueMatch : true
-						}
-					}
-				});
-			}
-			else
-			if(api.getIndex() == 8){
-				$('table.data').exTableFilter(['','','#category-filter']);
-			}
-			else
-			if(api.getIndex() == 9){
-				$('table.data').exTableFilter({
-					filters : {
-						1 : '#class-category-filter',
-						2 : '#class-category-filter',
-						3 : '#qty-filter'
-					}
-				});
-			}
+			$('textarea.code').exCodePrettify({
+				tabToSpace : true,
+				showDemo : true,
+				editCode : true
+			});
+*/
 		}
 	});
+
+
+/*
+	$('textarea.code').exCodePrettify({
+		tabToSpace : true,
+		showDemo : true,
+		editCode : true,
+		behaveJS : true
+	});
+*/
 });
 </script>
 </head>
 <body>
+	<div class="navbar navbar-default navbar-fixed-topx" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="http://www.cyokodog.net/blog/jquery-sitekit/" target="_blank"><span class="glyphicon glyphicon-book"></span> Document</a></li>
+					<li><a href="https://github.com/cyokodog/jquery.sitekit" target="_blank"><b class="glyphicon glyphicon-download-alt"></b> Download</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
 	<div class="container">
-		<div class="row-fluid">
-			<div class="navbar navbar-fixed-top">
-				<div class="navbar-inner">
-				<div class="container">
-					<ul class="nav pull-right">
-						<li><a href="http://www.cyokodog.net/blog/extablefilter/"><b class="icon-book"></b> Document</a></li>
-						<li><a href="https://github.com/cyokodog/jquery.ex-table-filter" target="_blank"><b class="icon-download"></b> Download</a></li>
-					</ul>
-				</div>
-				</div>
+		<div class="page-header">
+			<h1>Social Info <small>:: jQuery SiteKit</small></h1>
+			<div class="btn-group demo-index-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+					<span class="demo-title"></span> <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu demo-index" role="menu">
+				</ul>
 			</div>
-			<div class="page-header">
-				<h1>Ex Table Filter <small>v0.4</small></h1>
-				<p class="lead">$('table').exTableFilter([ '.filter1', '.filter2', ... ]);</p>
+
+		</div>
+
+
+	</div>
+
+	<div class="container">
+
+<!-- Demo01a -->
+		<div class="demo">
+			<h3>入力フィールドを自動生成してフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter();
+</textarea>
 			</div>
 		</div>
-		<div class="row-fluid">
-			<div class="span10">
 
-				<div class="demo">
-					<h3>Demo01</h3>
-					<p>シンプルなフィルター</p>
-					<dl class="filters form-inline">
-						<dt>Category：</dt>
-						<dd>
-							<input id="category-filter" type="text"/>
-						</dd>
-					</dl>
-				</div>
-
-				<div class="demo">
-					<h3>Demo02</h3>
-					<p>checkbox, radio, select でフィルター</p>
-					<dl class="filters form-inline">
-						<dt>No：</dt>
-						<dd id="no-filters">
-						</dd>
-						<dt>Class：</dt>
-						<dd>
-							<input id="class-filter-0" name="class-filter" type="radio" value="" checked/><label for="class-filter-0">all</label>
-							<input id="class-filter-1" name="class-filter" type="radio" value="core"/><label for="class-filter-1">core</label>
-							<input id="class-filter-2" name="class-filter" type="radio" value="ui"/><label for="class-filter-2">ui</label>
-						</dd>
-						<dt>Category：</dt>
-						<dd>
-							<select id="category-filter"><option></option></select>
-						</dd>
-					</dl>
-				</div>
-
-				<div class="demo">
-					<h3>Demo03</h3>
-					<p>Callback でフィルター</p>
-					<dl class="filters form-inline">
-						<dt>Class：</dt>
-						<dd>
-							<input id="class-filter-1" name="class-filter" type="checkbox" value="core"/><label for="class-filter-1">core</label>
-							<input id="class-filter-2" name="class-filter" type="checkbox" value="ui"/><label for="class-filter-2">ui</label>
-						</dd>
-						<dt>Category：</dt>
-						<dd>
-							<input id="category-filter" type="text"/>
-						</dd>
-						<dt>Qty：</dt>
-						<dd>
-							<input id="qty-filter-0" name="qty-filter" type="radio" value="" checked/><label for="qty-filter-0">all</label>
-							<input id="qty-filter-1" name="qty-filter" type="radio" value="100"/><label for="qty-filter-1">≧100</label>
-							<input id="qty-filter-2" name="qty-filter" type="radio" value="200"/><label for="qty-filter-2">≧200</label>
-						</dd>
-					</dl>
-				</div>
-
-				<div class="demo">
-					<h3>Demo04</h3>
-					<p>Callback で集計</p>
-					<dl class="filters form-inline">
-						<dt>Class：</dt>
-						<dd>
-							<input id="class-filter-1" name="class-filter" type="checkbox" value="core"/><label for="class-filter-1">core</label>
-							<input id="class-filter-2" name="class-filter" type="checkbox" value="ui"/><label for="class-filter-2">ui</label>
-						</dd>
-						<dt>Category：</dt>
-						<dd>
-							<input id="category-filter" type="text"/>
-						</dd>
-						<dt>Qty：</dt>
-						<dd>
-							<input id="qty-filter-0" name="qty-filter" type="radio" value="" checked/><label for="qty-filter-0">all</label>
-							<input id="qty-filter-1" name="qty-filter" type="radio" value="100"/><label for="qty-filter-1">≧100</label>
-							<input id="qty-filter-2" name="qty-filter" type="radio" value="200"/><label for="qty-filter-2">≧200</label>
-						</dd>
-					</dl>
-				</div>
-
-				<div class="demo">
-					<h3>Demo05</h3>
-					<p>前方一致フィルター</p>
-					<dl class="filters form-inline">
-						<dt>Category：</dt>
-						<dd>
-							<input id="category-filter" type="text"/>
-						</dd>
-					</dl>
-				</div>
-
-				<div class="demo">
-					<h3>Demo06</h3>
-					<p>正規表現でフィルター</p>
-				</div>
-
-				<div class="demo">
-					<h3>Demo07</h3>
-					<p>Query String でフィルター</p>
-					<dl class="filters form-inline">
-						<dt>Class：</dt>
-						<dd>
-							<a href="?class=core#contents6" class="core">core</a>
-							<a href="?class=ui#contents6" class="ui">ui</a>
-						</dd>
-					</dl>
-				</div>
-
-				<div class="demo">
-					<h3>Demo08</h3>
-					<p>option 要素の value 属性で一致判定</p>
-					<dl class="filters form-inline">
-						<dt>Category：</dt>
-						<dd>
-							<select id="category-filter"><option></option></select>
-						</dd>
-					</dl>
-				</div>
-
-				<div class="demo">
-					<h3>Demo09</h3>
-					<p>フィルターを複数テーブルに適用</p>
-					<dl class="filters form-inline">
-						<dt>Category：</dt>
-						<dd>
-							<input id="category-filter" type="text"/>
-						</dd>
-					</dl>
-					<div class="row-fluid">
-						<div class="span6 data-area"></div>
-						<div class="span6 data-area"></div>
-					</div>
-				</div>
-
-
-				<div class="demo">
-					<h3>Demo10</h3>
-					<p>１フィルターを複数カラムに適用</p>
-					<dl class="filters form-inline">
-						<dt>Class or Category：</dt>
-						<dd>
-							<input id="class-category-filter" type="text"/>
-						</dd>
-						<dt>Qty：</dt>
-						<dd>
-							<input id="qty-filter" name="qty-filter" type="text"/>
-						</dd>
-					</dl>
-				</div>
-
-				<table class="table data">
-					<thead>
-						<tr>
-							<th class="no">No</th>
-							<th class="class">Class</th>
-							<th class="category">Category</th>
-							<th class="qty">Qty</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr><td>1</td><td>core</td>	<td>Ajax</td><td class="num">203</td></tr>
-						<tr><td>2</td><td>core</td>	<td>Animation and Effects</td><td class="num">296</td></tr>
-						<tr><td>3</td><td>core</td>	<td>Browser Tweaks</td><td class="num">78</td></tr>
-						<tr><td>4</td><td>core</td>	<td>Data</td><td class="num">139</td></tr>
-						<tr><td>5</td><td>core</td>	<td>DOM</td><td class="num">141</td></tr>
-						<tr><td>6</td><td>ui</td>	<td>Drag-and-Drop</td><td class="num">37</td></tr>
-						<tr><td>7</td><td>core</td>	<td>Events</td><td class="num">130</td></tr>
-						<tr><td>8</td><td>ui</td>	<td>Forms</td><td class="num">364</td></tr>
-						<tr><td>9</td><td>core</td>	<td>Integration</td><td class="num">101</td></tr>
-						<tr><td>10</td><td>core</td><td>JavaScript</td><td class="num">148</td></tr>
-						<tr class="delim"><td></td>	<td></td><td></td><td></td></tr>
-						<tr><td>11</td><td>core</td><td>jQuery Extensions</td><td class="num">219</td></tr>
-						<tr><td>12</td><td>ui</td>	<td>Layout</td><td class="num">183</td></tr>
-						<tr><td>13</td><td>ui</td>	<td>Media</td><td class="num">129</td></tr>
-						<tr><td>14</td><td>ui</td>	<td>Menus</td><td class="num">92</td></tr>
-						<tr><td>15</td><td>core</td><td>Metaplugin</td><td class="num">26</td></tr>
-						<tr><td>16</td><td>ui</td>	<td>Navigation</td><td class="num">148</td></tr>
-						<tr><td>17</td><td>ui</td>	<td>Tables</td><td class="num">74</td></tr>
-						<tr><td>18</td><td>ui</td>	<td>User Interface</td><td class="num">644</td></tr>
-						<tr><td>19</td><td>core</td><td>Utilities</td><td class="num">327</td></tr>
-						<tr><td>20</td><td>ui</td>	<td>Widgets</td><td class="num">241</td></tr>
-						<tr class="delim"><td></td>	<td></td><td></td><td></td></tr>
-						<tr><td>21</td><td>ui</td>	<td>Windows and Overlays</td><td class="num">102</td></tr>
-					</tbody>	
-					<tfoot>
-						<tr>
-							<th colspan="3"/>
-							<th id="sum" class="num">&nbsp;</th>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-			<div class="span2">
-				<ul class="index nav nav-list"></ul>
+<!-- Demo01b -->
+		<div class="demo">
+			<h3>入力フィールドを自動生成してフィルタリング(一部の列を対象外)</h3>
+			<p>No と Qty はフィルターの対象としません。</p>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({ignore:'0,3'});
+</textarea>
 			</div>
 		</div>
+
+<!-- Demo01c -->
+		<div class="demo">
+			<h3>自前で用意した入力フォームでフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-3 control-label">MY SEARCH FIELD:</label>
+	<div class="col-sm-9">
+		<input type="text" class="filter form-control"/>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter('input.filter');
+
+/*
+//以下でもＯＫ
+$('table.data').exTableFilter($('input.filter'));
+*/
+</textarea>
+			</div>
+		</div>
+
+<!-- Demo01d -->
+		<div class="demo">
+			<h3>自前で用意した入力フォームでフィルタリング(一部の列を対象外)</h3>
+			<p>No と Qty はフィルターの対象としません。</p>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-3 control-label">MY SEARCH FIELD:</label>
+	<div class="col-sm-9">
+		<input type="text" class="filter form-control"/>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter('input.filter', {ignore:'0,3'});
+
+/*
+//以下でもＯＫ
+$('table.data').exTableFilter($('input.filter'), {ignore:'0,3'});
+*/
+</textarea>
+			</div>
+		</div>
+
+
+
+<!-- Demo01d -->
+		<div class="demo">
+			<h3>列毎に入力フォームを用意しフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-3 control-label">CLASS or CATEGORY:</label>
+	<div class="col-sm-6">
+		<input type="text" class="class-category-filter form-control"/>
+	</div>
+	<label class="col-sm-1 control-label">qty:</label>
+	<div class="col-sm-2">
+		<input type="text" class="qty-filter form-control"/>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		1 : 'input.class-category-filter',
+		2 : 'input.class-category-filter',
+		3 : 'input.qty-filter'
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+<!-- Demo01e -->
+		<div class="demo">
+			<h3>プルダウン、ラジオボタン、チェックボックスでフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-1 control-label">CLASS:</label>
+	<div class="col-sm-2">
+		<div class="radio">
+			<label><input type="radio" class="class-filter" name="class-filter" value=""/>all</label>
+		</div>
+		<div class="radio">
+			<label><input type="radio" class="class-filter" name="class-filter" value="core"/>core</label>
+		</div>
+		<div class="radio">
+			<label><input type="radio" class="class-filter" name="class-filter" value="ui"/>ui</label>
+		</div>
+	</div>
+	<label class="col-sm-2 control-label">CATEGORY:</label>
+	<div class="col-sm-4">
+		<select class="category-filter form-control">
+			<option></option>
+			<option>Events</option>
+			<option>Metaplugin</option>
+			<option>Utilities</option>
+		</select>
+	</div>
+	<label class="col-sm-1 control-label">QTY:</label>
+	<div class="col-sm-2">
+		<div class="checkbox">
+			<label><input type="checkbox" class="qty-filter" value="26"/>26</label>
+		</div>
+		<div class="checkbox">
+			<label><input type="checkbox" class="qty-filter" value="130"/>130</label>
+		</div>
+		<div class="checkbox">
+			<label><input type="checkbox" class="qty-filter" value="327"/>327</label>
+		</div>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		1 : 'input.class-filter',
+		2 : 'select.category-filter',
+		3 : 'input.qty-filter'
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+<!-- Demo01e -->
+		<div class="demo">
+			<h3>プルダウン、ラジオボタン、チェックボックス、テキストフォームを自動生成してフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-1 control-label">No:</label>
+	<div class="col-sm-3 no-filter-area inline-form">
+	</div>
+	<label class="col-sm-1 control-label">CLASS:</label>
+	<div class="col-sm-1 class-filter-area">
+	</div>
+	<label class="col-sm-2 control-label">CATEGORY:</label>
+	<div class="col-sm-2 category-filter-area">
+	</div>
+	<label class="col-sm-1 control-label">QTY:</label>
+	<div class="col-sm-1 qty-filter-area">
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		0 : {
+			append : {
+				to : 'div.no-filter-area',
+				type : 'checkbox'
+			}
+		},
+		1 : {
+			append : {
+				to : 'div.class-filter-area',
+				type : 'radio'
+			}
+		},
+		2 : {
+			append : {
+				to : 'div.category-filter-area',
+				type : 'select'
+			}
+		},
+		3 : {
+			append : {
+				to : 'div.qty-filter-area',
+				type : 'text'
+			}
+		}
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Demo01e -->
+		<div class="demo">
+			<h3>自動生成されるフォームのマークアップをカスタマイズする</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-1 control-label">CLASS:</label>
+	<div class="col-sm-5 class-filter-area">
+	</div>
+	<label class="col-sm-2 control-label">CATEGORY:</label>
+	<div class="col-sm-4 category-filter-area">
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		1 : {
+			append : {
+				template : '<div style="display:inline-block;margin:8px;"><label style="font-weight:normal"><input type="radio"/> {label}</label></div>',
+				addBlank : false,
+				to : 'div.class-filter-area',
+				type : 'radio'
+			}
+		},
+		2 : {
+			append : {
+				blankLabel : '全て',
+				to : 'div.category-filter-area',
+				type : 'select'
+			},
+			selectValueMatch : true
+		}
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+<!-- Demo01f -->
+		<div class="demo">
+			<h3>ロジックを記述しフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-1 control-label">QTY:</label>
+	<div class="col-sm-4 qty-filter-area">
+<div class="radio">
+	<label><input type="radio"/>ALL</label>
+</div>
+<div class="radio">
+	<label><input type="radio"/>≧100</label>
+</div>
+<div class="radio">
+	<label><input type="radio"/>≧200</label>
+</div>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		1 : {
+			append : {
+				to : 'div.class-checkboxes',
+				type : 'checkbox'
+			}
+		},
+		2 : {
+			append : {
+				to : '#category-filter',
+				type : 'select'
+			}
+		}
+	}
+});
+
+
+/*
+$.buildFilterElement();
+$('table.data').exTableFilter({
+	filters : {
+		1 : 'input[name=class-filter]',
+		2 : '#category-filter',
+		3 : {
+			element : 'input[name=qty-filter]',
+			onFiltering : function(api){
+				return api.getCurrentCellNum() >= api.getCurrentFilterNum();
+			}
+		}
+	}
+});
+*/
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+<!-- Demo01a2 -->
+		<div class="demo">
+			<h3>全カラムでフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<!--
+<div class="form-horizontal">
+	<label class="col-sm-2 control-label">SEARCH:</label>
+	<div class="col-sm-3">
+		<input type="text" class="freeword-filter form-control"/>
+	</div>
+</div>
+-->
+
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+//$('table.data').exTableFilter($('input.freeword-filter'));
+$('table.data').exTableFilter();
+</textarea>
+			</div>
+		</div>
+
+
+
+
+<!-- Demo01b -->
+		<div class="demo">
+			<h3>一部のカラムでフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<label class="col-sm-3 control-label">CLASS or CATEGORY:</label>
+	<div class="col-sm-9">
+		<input type="text" class="freeword-filter form-control"/>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter('input.freeword-filter', {ignore : '0,3'});
+
+//以下のようにも記述可
+/*
+$('table.data').exTableFilter({
+	filters : {
+		1 : 'input.freeword-filter',
+		2 : 'input.freeword-filter'
+	}
+});
+*/
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+<!-- Demo01 -->
+		<div class="demo">
+			<h3>入力文字列でフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">CATEGORY:</label>
+		<div class="col-sm-3">
+			<input id="category-filter" type="text" class="form-control"/>
+		</div>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+//$('table.data').exTableFilter(['','','#category-filter']);
+//$('table.data').exTableFilter('#category-filter', {ignore : '0,3'});
+$('table.data').exTableFilter('#category-filter');
+</textarea>
+			</div>
+		</div>
+
+
+<!-- Demo02 -->
+		<div class="demo">
+			<h3>CHECKBOX, RADIO, SELECT でフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="filters form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-1 control-label">No:</label>
+		<div class="col-sm-4 no-filter"></div>
+		<label class="col-sm-1 control-label">Class:</label>
+		<div class="col-sm-1 class-filter"></div>
+		<label class="col-sm-2 control-label">Category:</label>
+		<div class="col-sm-3 category-filter"></div>
+	</div>
+</div>
+</textarea>
+<textarea class="code script" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		0 : {
+			append : {
+				to : 'div.no-filter',
+				type : 'checkbox'
+			}
+		},
+		1 : {
+			append : {
+				to : 'div.class-filter',
+				type : 'radio'
+			}
+		},
+		2 : {
+			append : {
+				to : 'div.category-filter',
+				type : 'text'
+			}
+		}
+	}
+});
+
+
+/*
+$.buildFilterElement();
+$('table.data').exTableFilter({
+	filters : {
+		0 : 'input[name=no-filter]',
+		1 : 'input[name=class-filter]',
+		2 : '#category-filter'
+	}
+});
+*/
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Demo04 -->
+		<div class="demo">
+<h3>フィルタリング後の値を集計</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="filters form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-1 control-label">Class:</label>
+		<div class="col-sm-1">
+			<div class="checkbox">
+				<input id="class-filter-1" name="class-filter" type="checkbox" value="core"/><label for="class-filter-1">core</label>
+			</div>
+			<div class="checkbox">
+				<input id="class-filter-2" name="class-filter" type="checkbox" value="ui"/><label for="class-filter-2">ui</label>
+			</div>
+		</div>
+		<label class="col-sm-2 control-label">Category:</label>
+		<div class="col-sm-3">
+			<select id="category-filter" class="form-control"><option></option></select>
+		</div>
+		<label class="col-sm-1 control-label">Qty:</label>
+		<div class="col-sm-2">
+			<div class="radio"><input id="qty-filter-0" name="qty-filter" type="radio" value="" checked/><label for="qty-filter-0">all</label></div>
+			<div class="radio"><input id="qty-filter-1" name="qty-filter" type="radio" value="100"/><label for="qty-filter-1">≧100</label></div>
+			<div class="radio"><input id="qty-filter-2" name="qty-filter" type="radio" value="200"/><label for="qty-filter-2">≧200</label></div>
+		</div>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$.buildFilterElement();
+
+var sum;
+$('table.data').exTableFilter({
+	filters : {
+		1 : 'input[name=class-filter]',
+		2 : '#category-filter',
+		3 : {
+			element : 'input[name=qty-filter]',
+			onFiltering : function(api){
+				return api.getCurrentCellNum() >= api.getCurrentFilterNum();
+			}
+		}
+	},
+	onFilteringStart : function(api){
+		sum = 0;
+	},
+	onFiltering : function(api){
+		if(api.isShowCurrentRow()) sum = sum + api.getCurrentCellNum(3);
+	},
+	onFilteringEnd : function(api){
+		$('#sum').html(sum);
+	}
+});
+
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+<!-- Demo05 -->
+		<div class="demo">
+<h3>入力文字列の前方一致条件でフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="filters form-horizontal">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Category:</label>
+		<div class="col-sm-3">
+			<input id="category-filter" class="form-control" type="text">
+		</div>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+var sum;
+$('table.data').exTableFilter({
+	filters : {
+		2 : {
+			element : '#category-filter',
+			firstMatch : true
+		}
+	},
+	onFilteringStart : function(api){
+		sum = 0;
+	},
+	onFiltering : function(api){
+		if(api.isShowCurrentRow()) sum = sum + api.getCurrentCellNum(3);
+	},
+	onFilteringEnd : function(api){
+		$('#sum').html(sum);
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+<!-- Demo06 -->
+		<div class="demo">
+			<h3>正規表現で不要な行をフィルタリング</h3>
+			<p>「No」に値の無い行を非表示にする。</p>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		0 : /^\d+$/
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+<!-- Demo07 -->
+		<div class="demo">
+<h3>QueryString でフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+		<label class="col-sm-1 control-label">Class:</label>
+		<div id="no-filter" class="col-sm-2">
+			<a href="?class=core" class="core">core</a> / <a href="?class=ui" class="ui">ui</a>
+		</div>
+
+
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$('table.data').exTableFilter({
+	filters : {
+		1 : function(api){
+			var q = location.search.replace('?','').split('&');
+			var _class = 'core';
+			for(var i in q){
+				var p = q[i].split('=');
+				if(p[0] == 'class') _class = p[1];
+			}
+			$('a').each(function(){
+				if($(this).hasClass(_class)){$(this).addClass('active')}
+			});
+			return (!_class || api.getCurrentCellVal() == _class);
+		}
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+
+<!-- Demo08 -->
+		<div class="demo">
+			<h3>OPTION 要素の value 属性でフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<label class="col-sm-2 control-label">Category:</label>
+<div class="col-sm-3">
+	<select id="category-filter" class="form-control"><option></option></select>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$.buildFilterElement();
+var opt = $('select#category-filter option');
+opt.each(function(idx){
+	var el = opt.eq(idx);
+	var v = el.text();
+	el.text((v ? 'value is ' + v : 'all')).prop('value', v);
+});
+$('table.data').exTableFilter({
+	filters : {
+		2 : {
+			element : '#category-filter',
+			selectValueMatch : true
+		}
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+<!-- Demo09 -->
+		<div class="demo">
+			<h3>１つのフィルター条件で複数のテーブルをフィルタリング</h3>
+			<div class="ex-code-prettify demo-top two-table">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="row">
+	<label class="col-sm-2 control-label">Category:</label>
+	<div class="col-sm-3">
+		<select id="category-filter" class="form-control"><option></option></select>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$.buildFilterElement();
+$('table.data').exTableFilter(['','','#category-filter']);
+</textarea>
+			</div>
+		</div>
+
+
+
+
+<!-- Demo10 -->
+		<div class="demo">
+			<h3>１つのフィルター条件で複数の列をフィルタリング</h3>
+			<div class="ex-code-prettify demo-top">
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<div class="row">
+	<label class="col-sm-2 control-label">CLASS or CATEGORY:</label>
+	<div class="col-sm-3">
+		<input id="class-category-filter" type="text" class="form-control"/>
+	</div>
+</div>
+</textarea>
+<textarea class="code" data-ex-code-prettify-param="{codeType:'script'}">
+$.buildFilterElement();
+$('table.data').exTableFilter({
+	filters : {
+		1 : '#class-category-filter',
+		2 : '#class-category-filter'
+	}
+});
+</textarea>
+			</div>
+		</div>
+
+
+
+
+
+
+
+		<div class="demo-common">
+<textarea class="code jsFile" data-ex-code-prettify-param="{codeType:'jsFile'}">
+jquery.extablefilter-latest.js
+</textarea>
+<textarea class="code html" data-ex-code-prettify-param="{codeType:'html'}">
+<table class="table data">
+	<thead>
+		<tr>
+			<th class="no">No</th>
+			<th class="class">Class</th>
+			<th class="category">Category</th>
+			<th class="qty">Qty</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr><td>1</td><td>core</td>    <td>Ajax</td><td class="num">203</td></tr>
+		<tr><td>2</td><td>core</td>    <td>Animation and Effects</td><td class="num">296</td></tr>
+		<tr><td>3</td><td>core</td>    <td>Browser Tweaks</td><td class="num">78</td></tr>
+		<tr><td>4</td><td>core</td>    <td>Data</td><td class="num">139</td></tr>
+		<tr><td>5</td><td>core</td>    <td>DOM</td><td class="num">141</td></tr>
+		<tr><td>6</td><td>ui</td>      <td>Drag-and-Drop</td><td class="num">37</td></tr>
+		<tr><td>7</td><td>core</td>    <td>Events</td><td class="num">130</td></tr>
+		<tr><td>8</td><td>ui</td>      <td>Forms</td><td class="num">364</td></tr>
+		<tr><td>9</td><td>core</td>    <td>Integration</td><td class="num">101</td></tr>
+		<tr><td>10</td><td>core</td>   <td>JavaScript</td><td class="num">148</td></tr>
+		<tr class="delim"><td></td>    <td></td><td></td><td></td></tr>
+		<tr><td>11</td><td>core</td>   <td>jQuery Extensions</td><td class="num">219</td></tr>
+		<tr><td>12</td><td>ui</td>     <td>Layout</td><td class="num">183</td></tr>
+		<tr><td>13</td><td>ui</td>     <td>Media</td><td class="num">129</td></tr>
+		<tr><td>14</td><td>ui</td>     <td>Menus</td><td class="num">92</td></tr>
+		<tr><td>15</td><td>core</td>   <td>Metaplugin</td><td class="num">26</td></tr>
+		<tr><td>16</td><td>ui</td>     <td>Navigation</td><td class="num">148</td></tr>
+		<tr><td>17</td><td>ui</td>     <td>Tables</td><td class="num">74</td></tr>
+		<tr><td>18</td><td>ui</td>     <td>User Interface</td><td class="num">644</td></tr>
+		<tr><td>19</td><td>core</td>   <td>Utilities</td><td class="num">327</td></tr>
+		<tr><td>20</td><td>ui</td>     <td>Widgets</td><td class="num">241</td></tr>
+		<tr class="delim"><td></td>    <td></td><td></td><td></td></tr>
+		<tr><td>21</td><td>ui</td>     <td>Windows and Overlays</td><td class="num">102</td></tr>
+	</tbody>	
+	<tfoot>
+		<tr>
+			<th colspan="3"/>
+			<th id="sum" class="num">&nbsp;</th>
+		</tr>
+	</tfoot>
+</table>
+</textarea>
+
+
+		</div>
+
+
 	</div>
 </body>
 </html>

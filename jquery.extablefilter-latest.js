@@ -1,11 +1,11 @@
 /*
- *  Ex Table Filter 0.4 - jQuery Plugin
+ *  Ex Table Filter 0.5 - jQuery Plugin
  *	written by cyokodog
  *
- *	Copyright (c) 2013 cyokodog 
+ *	Copyright (c) 2014 cyokodog 
+ *		http://www.cyokodog.net/
  *		http://d.hatena.ne.jp/cyokodog/)
  *		http://cyokodog.tumblr.com/
- *		http://www.cyokodog.net/
  *	MIT LICENCE
  *
  *	Built for jQuery library
@@ -48,6 +48,7 @@
 	var plugin = $.ex.tableFilter = function(target, option){
 		var o = this,
 		c = o.config = $.extend(true,{}, $.ex.tableFilter.defaults, option, o.getDataParam());
+		plugin.status.applyCnt ++;
 		c.target = target.eq(0);
 		c._filters = {};
 		o.setFilters(c.filters,{autoFilter:false});
@@ -129,9 +130,11 @@
 		// 各カラムのフィルタ条件を配列又は JSON 形式でまとめて設定する
 		setFilters : function(filters, config){
 			var o = this, c = $.extend({},o.config,config);
+			var appends = null;
 			$.each(filters, function(index){
-				c._filters[index] = filters[index];
+				var filter = c._filters[index] = filters[index];
 			});
+			o._generateFilter();
 			$.each(c._filters, function(index){
 				o.setFilter(index, c._filters[index], config);
 			});
@@ -312,50 +315,180 @@
 				return element.data(name);
 			}
 			return filter[name];
+		},
+
+		// フィルタ入力フィールドを自動生成する
+		_generateFilter : function(){
+			var o = this, c = o.config;
+			var appends = null;
+			$.each(c._filters, function(index){
+				var filter = c._filters[index];
+				if(!(filter instanceof jQuery) && typeof filter == 'object'){
+					var append = filter.append;
+					if(append && append.to && append.type){
+						appends = appends || {};
+						appends[index] = append;
+					}
+				}
+			});
+			if(!appends) return o;
+			c.target.find('> tbody > tr').each(function(rowno){
+				var tr = $(this);
+				if(rowno >= c.startDataRowNo){
+					$.each(appends, function(i){
+						var v = tr.find('> *').eq(i).text();
+						if(v.length){
+							var append = appends[i];
+							append.values = append.values || {};
+							append.values[v] = v;
+							if(!isNaN(v)) append.numCnt = (append.numCnt || 0) + 1;
+							append.valCnt = (append.valCnt || 0) + 1;
+						}
+					});
+				}
+			});
+			$.each(appends, function(i){
+				var append = appends[i];
+				var appendFilter = c.appendFilter[append.type];
+
+append = $.extend(true, {}, appendFilter, append);
+
+				append.to = $(append.to);
+				append.isNumValues = (append.numCnt == append.valCnt);
+				if(append.to.size() && append.values){
+					var arr = [];
+					$.each(append.values, function(v){
+						arr.push(v);
+					});
+					!append.isNumValues ? arr.sort() : arr.sort(function(a, b){
+						return (parseInt(a) > parseInt(b)) ? 1 : -1;
+					});
+					if(/^(checkbox|radio)$/.test(append.type)){
+						var element = [];
+						var add = function(label, value){
+							var wrap = $(append.template.replace(/{label}/ig, label)).appendTo(append.to);
+							var el = wrap.prop('type') == append.type ? wrap : wrap.find('input:' + append.type);
+							if(append.type == 'radio') el.prop('name', 'radio-filter-' + plugin.status.applyCnt);
+							element.push(el.val(value)[0]);
+						}
+						$.each(arr, function(j){
+							var v = arr[j];
+							if(j == 0 && append.addBlank) add(append.blankLabel, append.blankValue)
+							add(v, v);
+						});
+						if(element.length){
+							c._filters[i].element = $(element);
+						}
+					}
+					else
+					if(append.type == 'select'){
+						var element = $(append.template).appendTo(append.to);
+						var add = function(label, value) {
+							$('<option/>').val(value).text(label).appendTo(element);
+						}
+						if(append.addBlank) add(append.blankLabel, append.blankValue);
+						$.each(arr, function(j){
+							var v = arr[j];
+							add(v, v);
+						});
+						c._filters[i].element = element;
+					}
+					else
+					if(append.type == 'text'){
+						c._filters[i].element = $(append.template).appendTo(append.to);
+					}
+				}
+			});
 		}
 	});
 
 	// Setting
 	$.extend($.ex.tableFilter,{
-	defaults : {
-		api : false,	// true の場合 api オブジェクトを返す
-		filters : [],	// 各カラムのフィルタ条件を配列又は JSON 形式でまとめて指定
-		autoFilter : true,	//	プラグイン適用後のフィルタリングの自動実行の適用
-		autoBindFilter : true,	//	トリガーの自動割り当ての適用
-		elementAutoBindTrigger : 'keydown change',	//	自動割り当てするトリガーの指定
-		elementAutoBindFilterDelay : 300,	//	フィルタトリガー起動時のフィルタリング実行間隔の指定
-		startDataRowNo : 0,	//	フィルタリング開始行の指定
-		callback : function(api){},	//	プラグイン適用後のコールバック処理の指定
-		onFilteringStart : function(api){},	//	フィルタリング開始時のコールバック処理の指定
-		onFiltering : function(api){},	//	各行のフィルタリング後のコールバック処理の指定
-		onFilteringEnd : function(api){},	//	フィルタリング終了時のコールバック処理の指定
-		elementFilter : {	//	input:text 要素でフィルタする場合のデフォルト設定
-			element : '',	//	フィルタ条件の入力フィールドを指定
-			firstMatch : false,	//	前方一致フィルタの適用
-			lastMatch : false,	//	後方一致フィルタの適用
-			fullMatch : false,	//	完全一致フィルタの適用
-			wildcardMatch : false,	//	ワイルドカードフィルタの適用
-			matchSwitch : 'ig',	// 正規表現フィルタのスイッチを指定
-			onFiltering : function(api){}
+		status : {
+			applyCnt : 0
 		},
-		selectElementFilter : {	//	select,radio,checkbox 要素でフィルタする場合のデフォルト設定
-			selectValueMatch : false,	//	select 要素でフィルタする場合の value 属性で一致判定する
-			element : '',	//	elementFilterと同様
-			firstMatch : false,	//	elementFilterと同様
-			lastMatch : false,	//	elementFilterと同様
-			fullMatch : true,	//	完全一致フィルタの適用
-			wildcardMatch : false,	//	elementFilterと同様
-			matchSwitch : '',	//	elementFilterと同様
-			onFiltering : function(api){}
-		}
-	},
-	version : '0.4',
-	id : 'ex-table-filter'
+		defaults : {
+			api : false,	// true の場合 api オブジェクトを返す
+			filters : [],	// 各カラムのフィルタ条件を配列又は JSON 形式でまとめて指定
+			autoFilter : true,	//	プラグイン適用後のフィルタリングの自動実行の適用
+			autoBindFilter : true,	//	トリガーの自動割り当ての適用
+			elementAutoBindTrigger : 'keydown change',	//	自動割り当てするトリガーの指定
+			elementAutoBindFilterDelay : 300,	//	フィルタトリガー起動時のフィルタリング実行間隔の指定
+			startDataRowNo : 0,	//	フィルタリング開始行の指定
+			callback : function(api){},	//	プラグイン適用後のコールバック処理の指定
+			onFilteringStart : function(api){},	//	フィルタリング開始時のコールバック処理の指定
+			onFiltering : function(api){},	//	各行のフィルタリング後のコールバック処理の指定
+			onFilteringEnd : function(api){},	//	フィルタリング終了時のコールバック処理の指定
+			elementFilter : {	//	input:text 要素でフィルタする場合のデフォルト設定
+				element : '',	//	フィルタ条件の入力フィールドを指定
+				firstMatch : false,	//	前方一致フィルタの適用
+				lastMatch : false,	//	後方一致フィルタの適用
+				fullMatch : false,	//	完全一致フィルタの適用
+				wildcardMatch : false,	//	ワイルドカードフィルタの適用
+				matchSwitch : 'ig',	// 正規表現フィルタのスイッチを指定
+				onFiltering : function(api){}
+			},
+			selectElementFilter : {	//	select,radio,checkbox 要素でフィルタする場合のデフォルト設定
+				selectValueMatch : false,	//	select 要素でフィルタする場合の value 属性で一致判定する
+				element : '',	//	elementFilterと同様
+				firstMatch : false,	//	elementFilterと同様
+				lastMatch : false,	//	elementFilterと同様
+				fullMatch : true,	//	完全一致フィルタの適用
+				wildcardMatch : false,	//	elementFilterと同様
+				matchSwitch : '',	//	elementFilterと同様
+				onFiltering : function(api){}
+			},
+			appendFilter : {
+				to : '',
+				type : '',
+				'text' : {
+					template : '<input class="form-control" type="text"/>'
+				},
+				'checkbox' : {
+					template : '<div class="checkbox"><label><input type="checkbox"/>{label}</label></div>'
+				},
+				'radio' : {
+					addBlank : true,
+					blankLabel : 'all',
+					blankValue : '',
+					template : '<div class="radio"><label><input type="radio""/>{label}</label></div>'
+				},
+				'select' : {
+					addBlank : true,
+					blankLabel : '',
+					blankValue : '',
+					template : '<select class="form-control"/>'
+				}
+			},
+			filterFieldTemplate : '<div><label>SEARCH:</label><input type="text" class="form-control"/></div>'
+		},
+		version : '0.5',
+		id : 'ex-table-filter'
 	});
 
 	// jQuery Method
-	$.fn.exTableFilter = function(option){
-		var targets = this,api = [];
+	$.fn.exTableFilter = function(option, option2){
+		var targets = this, api = [];
+		if(!arguments.length || (option && !option.filters && typeof option != 'string' && !(option instanceof jQuery))){
+			option2 = option;
+			option = $(plugin.defaults.filterFieldTemplate).insertBefore(targets.eq(0)).find('input');
+		}
+
+		if(option instanceof jQuery || typeof option == 'string'){
+			var arr = [];
+			targets.eq(0).find('> tbody > tr:eq(0) > *').each(function(i){
+				var sts = true
+				if(option2 && option2.ignore){
+					var ignore = option2.ignore.split(',');
+					$.each(ignore, function(j){
+						if(i == ignore[j]) sts = false;
+					});
+				}
+				if(sts) arr[i] = option;
+			});
+			option = arr;
+		}
+
 		if(option instanceof Array) option = {filters : option};
 		targets.each(function(index) {
 			var target = targets.eq(index);
