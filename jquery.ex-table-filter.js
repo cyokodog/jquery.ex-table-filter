@@ -322,7 +322,7 @@
 		// フィルターにステータスを設定
 		_setFilterStatus : function(filter, name, val){
 			var element = filter.element;
-			if(element && element.size()){
+			if(element && element.length){
 				element.data(name, val);
 			}
 			filter[name] = val;
@@ -331,7 +331,7 @@
 		// フィルターのステータスを取得
 		_getFilterStatus : function(filter, name){
 			var element = filter.element;
-			if(element && element.size()){
+			if(element && element.length){
 				return element.data(name);
 			}
 			return filter[name];
@@ -373,7 +373,7 @@
 				append = $.extend(true, {}, appendFilter, append);
 				append.to = $(append.to);
 				append.isNumValues = (append.numCnt == append.valCnt);
-				if(append.to.size() && append.values){
+				if(append.to.length && append.values){
 					var arr = [];
 					$.each(append.values, function(v){
 						arr.push(v);
