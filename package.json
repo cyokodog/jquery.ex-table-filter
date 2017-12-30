@@ -1,0 +1,27 @@
+{
+  "name": "jquery.ex-table-filter",
+  "version": "1.0.0",
+  "description": "jquery.ex-table-filter =======================",
+  "main": "jquery.ex-table-filter.js",
+  "scripts": {
+    "prettier": "prettier --write *.js",
+    "lint": "eslint . --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyokodog/jquery.ex-table-filter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/cyokodog/jquery.ex-table-filter/issues"
+  },
+  "homepage": "https://github.com/cyokodog/jquery.ex-table-filter#readme",
+  "devDependencies": {
+    "eslint": "4.14.0",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.8.0",
+    "prettier": "1.9.2"
+  }
+}
